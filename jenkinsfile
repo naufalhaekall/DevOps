@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout code from the GitHub repository
-                git 'https://github.com/naufalhaekall/DevOps.git'
+                git 'https://github.com/naufalhaekall/devOps.git'
             }
         }
         
