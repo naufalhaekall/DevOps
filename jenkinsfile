@@ -8,6 +8,13 @@ pipeline {
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                // Checkout code from the GitHub repository
+                git 'https://github.com/naufalhaekall/DevOps.git'
+            }
+        }
+        
         stage('Build Docker Image') {
             steps {
                 script {
