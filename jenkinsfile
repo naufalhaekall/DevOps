@@ -2,19 +2,12 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "naufalhaekall/testrepo"
-        DOCKER_REGISTRY = "https://hub.docker.com/"
+        DOCKER_IMAGE = "naufalhaekall/getstar2"
+        DOCKER_REGISTRY = "https://hub.docker.com/repository/docker/naufalhaekall/getstar2/general"
         DOCKER_CREDENTIALS_ID = "bea9012f-6eb7-4807-8c0f-858960802c8e"
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                // Checkout code from the version control
-                git 'https://your-repository-url.git'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 script {
@@ -23,15 +16,15 @@ pipeline {
             }
         }
 
-        stage('Test Docker Image') {
+        stage('Run Docker Container') {
             steps {
                 script {
-                    docker.image(DOCKER_IMAGE).inside {
-                        sh 'run-your-tests.sh'
-                    }
+                // Run the Docker container
+                docker.image(DOCKER_IMAGE).run("--name jenkinscontainer -d -p 4000:3000")
                 }
-            }
+            }  
         }
+
 
         stage('Push Docker Image') {
             steps {
@@ -39,15 +32,6 @@ pipeline {
                     docker.withRegistry(DOCKER_REGISTRY, DOCKER_CREDENTIALS_ID) {
                         docker.image(DOCKER_IMAGE).push('latest')
                     }
-                }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                script {
-                    // Example deployment step
-                    // sh 'deploy-your-application.sh'
                 }
             }
         }
