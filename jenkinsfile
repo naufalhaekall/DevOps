@@ -1,0 +1,62 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = "naufalhaekall/testrepo"
+        DOCKER_REGISTRY = "https://hub.docker.com/"
+        DOCKER_CREDENTIALS_ID = "bea9012f-6eb7-4807-8c0f-858960802c8e"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout code from the version control
+                git 'https://your-repository-url.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build(DOCKER_IMAGE)
+                }
+            }
+        }
+
+        stage('Test Docker Image') {
+            steps {
+                script {
+                    docker.image(DOCKER_IMAGE).inside {
+                        sh 'run-your-tests.sh'
+                    }
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry(DOCKER_REGISTRY, DOCKER_CREDENTIALS_ID) {
+                        docker.image(DOCKER_IMAGE).push('latest')
+                    }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    // Example deployment step
+                    // sh 'deploy-your-application.sh'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Cleanup steps
+            cleanWs()
+        }
+    }
+}

@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  app:
+    image: node:18-alpine
+    container_name: composedContainer
+    command: sh -c "yarn install && yarn run dev"
+    ports:
+      - 3700:3000
+    working_dir: /app
+    volumes:
+      - ./:/app
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: secret
+      MYSQL_DB: agendaList
+
+  mysql:
+    image: mysql:8.0
+    volumes:
+      - mysqlData:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: agendaList
+
+volumes:
+  mysqlData:
